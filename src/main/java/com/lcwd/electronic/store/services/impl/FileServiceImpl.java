@@ -19,20 +19,14 @@ public class FileServiceImpl implements FileService {
     private Logger logger= LoggerFactory.getLogger(FileServiceImpl.class);
     @Override
     public String uploadImage(MultipartFile file, String path) throws IOException {
-
         String originalFileName=file.getOriginalFilename();
         logger.info("file name{}",originalFileName);
         String filename= UUID.randomUUID().toString();
-
         String extension=originalFileName.substring(originalFileName.lastIndexOf("."));
-
         String filenameWithExtension=filename+extension;
-
         String fullPathWithFileName=path+filenameWithExtension;
-
         logger.info("full image name:{}",filenameWithExtension);
         logger.info("full image name with oath:{}",fullPathWithFileName);
-
         if(extension.equalsIgnoreCase(".png")
                 ||extension.equalsIgnoreCase(".jpg")
                 ||extension.equalsIgnoreCase(".jpeg"))
