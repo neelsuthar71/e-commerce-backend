@@ -1,6 +1,8 @@
 package com.lcwd.electronic.store.services.impl;
+import com.lcwd.electronic.store.dtos.CategoryDto;
 import com.lcwd.electronic.store.dtos.PageableResponse;
 import com.lcwd.electronic.store.dtos.ProductDto;
+import com.lcwd.electronic.store.entities.Category;
 import com.lcwd.electronic.store.entities.Product;
 import com.lcwd.electronic.store.exception.ResourcesNotFoundException;
 
@@ -13,6 +15,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.UUID;
+
+@Service
+
 
 public class ProductServiceImpl implements ProductService {
 
@@ -23,7 +32,13 @@ public class ProductServiceImpl implements ProductService {
     private ProductRepository productRepository;
     @Override
     public ProductDto createProduct(ProductDto productDto) {
+
         Product product =mapper.map(productDto,Product.class);
+        String productId =UUID.randomUUID().toString();
+        product.setProductId(productId);
+
+        product.setAddedDate(new Date());
+
         Product saveProduct=productRepository.save(product);
         return mapper.map(saveProduct,ProductDto.class);
     }
@@ -53,7 +68,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto getSingleProduct(String productId) {
-        return null;
+        Product product=
+                productRepository.findById(productId).orElseThrow(()->  new ResourcesNotFoundException("product with this id does not exist"));
+
+        return mapper.map(product, ProductDto.class);
     }
 
     @Override
@@ -63,6 +81,7 @@ public class ProductServiceImpl implements ProductService {
         Page<Product> page=productRepository.findAll(pageable);
         return Helper.getPageableResponse(page,ProductDto.class);
     }
+
 
     @Override
     public PageableResponse<ProductDto> getAllProductLive(int pageNumber, int pageSize, String sortBy, String sortDir) {
@@ -78,7 +97,7 @@ public class ProductServiceImpl implements ProductService {
     public PageableResponse<ProductDto> searchByTitle(String subTitle,int pageNumber, int pageSize, String sortBy, String sortDir) {
         Sort sort=(sortDir.equalsIgnoreCase("desc"))?(Sort.by(sortBy).descending()) :(Sort.by(sortBy).ascending());
         Pageable pageable= PageRequest.of(pageNumber,pageSize,sort);
-        Page<Product> page=productRepository.findByTitle(subTitle,pageable);
+        Page<Product> page=productRepository.findByproductTitleContaining(subTitle,pageable);
         return Helper.getPageableResponse(page,ProductDto.class);
     }
 

@@ -3,7 +3,9 @@ package com.lcwd.electronic.store.services;
 import com.lcwd.electronic.store.dtos.CategoryDto;
 import com.lcwd.electronic.store.dtos.PageableResponse;
 import com.lcwd.electronic.store.dtos.ProductDto;
+import org.springframework.stereotype.Service;
 
+@Service
 public interface ProductService {
     //create
     ProductDto createProduct(ProductDto productDto);
