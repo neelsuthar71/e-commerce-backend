@@ -1,0 +1,12 @@
+version: '3'
+services:
+  app:
+    image: electronic_store
+    ports:
+      - 8080:8080
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
